@@ -11,4 +11,5 @@ const pool = new Pool({
 	database: process.env.database
 });
 
+// link test image: https://lgrz-marketplace-images.s3.sa-east-1.amazonaws.com/fizz.jpeg
 export default pool;
