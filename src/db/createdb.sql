@@ -10,11 +10,12 @@ CREATE TABLE Users (
     first_name TEXT,
     last_name TEXT,
     phone TEXT,
+    role SMALLINT DEFAULT 0, -- 0 = user, 1 = admin
     created_at TIMESTAMP,
     modified_at TIMESTAMP
 );
 
-CREATE TABLE Product (
+CREATE TABLE Products (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     category_id INT REFERENCES Category(id),
