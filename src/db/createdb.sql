@@ -30,7 +30,7 @@ CREATE TABLE Products (
 CREATE TABLE Votes (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    product_id INT NOT NULL REFERENCES Product(id) ON DELETE CASCADE,
+    product_id INT NOT NULL REFERENCES Products(id) ON DELETE CASCADE,
     vote_type SMALLINT NOT NULL CHECK (vote_type IN (1, -1)),
     created_at TIMESTAMP
 );
