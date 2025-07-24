@@ -16,9 +16,26 @@ interface Product {
   modified_at: number;
 }
 
+// const ids_categorias = {
+//   Eletronicos: 1,
+//   Moveis: 2,
+//   Roupas: 3,
+// }
+
 router.get('/', async (req: Request, res: Response): Promise<any> => {
+  const { category } = req.query;
   try {
-    const result = await pool.query(`SELECT * FROM products FETCH FIRST 30 ROW ONLY;`);
+    let query = `SELECT * FROM products`;
+    const queryParams: any[] = [];
+
+    if (category) {
+      query += ` WHERE category_id = $1`;
+      queryParams.push(category);
+    }
+
+    query += ` FETCH FIRST 30 ROW ONLY;`;
+
+    const result = await pool.query(query, queryParams);
     return res.status(200).json(result.rows);
   } catch (e) {
     console.error(e);
