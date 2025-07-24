@@ -13,11 +13,9 @@ async function seedDatabase() {
 
     await pool.query(`
       INSERT INTO Category (name) VALUES
-      ('Electronics'),
-      ('Books'),
-      ('Clothing'),
-      ('Home Goods'),
-      ('Sports');
+      ('Eletronicos'),
+      ('Moveis'),
+      ('Roupas');
     `);
     console.log('Seeded Categories.');
 
@@ -37,19 +35,17 @@ async function seedDatabase() {
     const adminUserId = usersResult.rows.find(u => u.username === 'admin_user')?.id;
 
     const categoriesResult = await pool.query('SELECT id, name FROM Category ORDER BY id ASC;');
-    const electronicsId = categoriesResult.rows.find(c => c.name === 'Electronics')?.id;
-    const booksId = categoriesResult.rows.find(c => c.name === 'Books')?.id;
-    const clothingId = categoriesResult.rows.find(c => c.name === 'Clothing')?.id;
+    const eletronicosId = categoriesResult.rows.find(c => c.name === 'Eletronicos')?.id;
+    const moveisId = categoriesResult.rows.find(c => c.name === 'Moveis')?.id;
+    const roupasId = categoriesResult.rows.find(c => c.name === 'Roupas')?.id;
 
-    if (johnDoeId && electronicsId && booksId && clothingId) {
+    if (johnDoeId && eletronicosId && roupasId) {
       await pool.query(`
         INSERT INTO Products (name, category_id, user_id, price, image_url, votes, created_at, modified_at) VALUES
-        ('Laptop Pro', $1, $2, 1200.00, 'https://example.com/laptop.jpg', 15, $5, $5),
-        ('The Great Novel', $3, $2, 25.50, 'https://example.com/novel.jpg', 8, $5, $5),
-        ('Vintage T-Shirt', $4, $2, 18.99, 'https://example.com/tshirt.jpg', 3, $5, $5),
-        ('Smartphone X', $1, $2, 800.00, 'https://example.com/phone.jpg', 20, $5, $5),
-        ('Cookbook Essentials', $3, $2, 35.00, 'https://example.com/cookbook.jpg', 5, $5, $5);
-      `, [electronicsId, johnDoeId, booksId, clothingId, date]);
+        ('Laptop', $1, $2, 1200.00, 'https://lgrz-marketplace-images.s3.sa-east-1.amazonaws.com/fizz.jpeg', 15, $3, $3),
+        ('Vintage T-Shirt', $4, $2, 18.99, 'https://lgrz-marketplace-images.s3.sa-east-1.amazonaws.com/fizz.jpeg', 3, $3, $3),
+        ('Smartphone X', $1, $2, 800.00, 'https://lgrz-marketplace-images.s3.sa-east-1.amazonaws.com/fizz.jpeg', 20, $3, $3);
+      `, [eletronicosId, johnDoeId, date, roupasId]);
       console.log('Seeded Products.');
     } else {
       console.warn('Could not find necessary IDs for seeding products. Skipping product seed.');
@@ -57,16 +53,14 @@ async function seedDatabase() {
 
     if (johnDoeId && adminUserId) {
       const productsResult = await pool.query('SELECT id, name FROM Products ORDER BY id ASC;');
-      const laptopId = productsResult.rows.find(p => p.name === 'Laptop Pro')?.id;
-      const novelId = productsResult.rows.find(p => p.name === 'The Great Novel')?.id;
+      const laptopId = productsResult.rows.find(p => p.name === 'Laptop')?.id;
 
-      if (laptopId && novelId) {
+      if (laptopId) {
         await pool.query(`
                 INSERT INTO Votes (user_id, product_id, vote_type, created_at) VALUES
-                ($1, $2, 1, $4),
-                ($3, $2, 1, $4),
-                ($1, $5, -1, $4);
-            `, [johnDoeId, laptopId, adminUserId, date, novelId]);
+                ($1, $2, 1, $3),
+                ($4, $2, 1, $3);
+            `, [johnDoeId, laptopId, date, adminUserId]);
         console.log('Seeded Votes.');
       }
     }
