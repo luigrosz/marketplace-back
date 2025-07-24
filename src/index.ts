@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import users from './routes/users';
 import products from './routes/products';
 // import category from './routes/category';
@@ -7,6 +8,10 @@ import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = 3001;
+
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 
 app.use(express.json());
 app.use(cookieParser());
