@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import pool from '../db/pool';
-import { signAccessToken, signRefreshToken } from '../middlewares/jwt.js'
+
+import authenticateToken from '../middlewares/authMiddleware';
 
 const router = Router();
 
@@ -25,10 +26,10 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
   }
 });
 
-router.post('/create', async (req: Request, res: Response): Promise<any> => {
-  const { name, category_id, user_id, price, image_url } = req.body;
+router.post('/create', authenticateToken, async (req: Request, res: Response): Promise<any> => {
+  const { name, category_id, price, image_url } = req.body;
+  const user_id = (req as any).user.id;
   try {
-    signAccessToken(req, res);
     let date = new Date(Date.now());
     date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     await pool.query(

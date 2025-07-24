@@ -6,7 +6,7 @@ const signAccessToken = (req, res) => {
     if (req) {
       const accessToken = jwt.sign({ ...req }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
       const refreshToken = jwt.sign({ ...req }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '90d' });
-      res.cookie('refreshToken', `${refreshToken}`, { expired: 2 * 60 * 60 * 1000 });
+      res.cookie('refreshToken', `${refreshToken}`, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
     }
   } catch (e) {
     return res.status(500).json(e);

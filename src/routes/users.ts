@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import pool from '../db/pool';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
@@ -21,10 +22,8 @@ router.get('/', async (req: Request, res: Response): Promise<any> => {
     console.error('error fetching users');
     res.status(500).json({ message: 'error fetching users' });
   }
-  res.json('hello from users!');
 });
 
-// get requisitions cant have a body
 router.post('/getUserByUsername', async (req: Request, res: Response): Promise<any> => {
   const { username } = req.body;
   try {
@@ -43,11 +42,12 @@ router.post('/getUserByUsername', async (req: Request, res: Response): Promise<a
 router.post('/create', async (req: Request, res: Response): Promise<any> => {
   const { username, password, first_name, last_name, phone } = req.body;
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
     let date = new Date(Date.now());
     date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     await pool.query(
       `INSERT INTO USERS (username, password, first_name, last_name, phone, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
-      [username, password, first_name, last_name, phone, date, date]
+      [username, hashedPassword, first_name, last_name, phone, date, date]
     );
     return res.status(201).json('user created');
   } catch (e) {
