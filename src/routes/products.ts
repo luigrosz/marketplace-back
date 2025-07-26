@@ -23,14 +23,29 @@ interface Product {
 // }
 
 router.get('/', async (req: Request, res: Response): Promise<any> => {
-  const { category } = req.query;
+  const { category, name } = req.query;
   try {
     let query = `SELECT * FROM products`;
     const queryParams: any[] = [];
+    let paramIndex = 1;
+
+    if (category || name) {
+      query += ` WHERE`;
+    }
 
     if (category) {
-      query += ` WHERE category_id = $1`;
+      query += ` category_id = $${paramIndex}`;
       queryParams.push(category);
+      paramIndex++;
+    }
+
+    if (name) {
+      if (category) {
+        query += ` AND`;
+      }
+      query += ` name ILIKE $${paramIndex}`;
+      queryParams.push(`%${name}%`);
+      paramIndex++;
     }
 
     query += ` FETCH FIRST 30 ROW ONLY;`;
