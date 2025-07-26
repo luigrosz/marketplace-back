@@ -7,8 +7,6 @@ CREATE TABLE Users (
     id SERIAL PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    first_name TEXT,
-    last_name TEXT,
     phone TEXT,
     role SMALLINT DEFAULT 0, -- 0 = user, 1 = admin
     created_at TIMESTAMP,

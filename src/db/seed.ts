@@ -24,9 +24,9 @@ async function seedDatabase() {
     const date = new Date(Date.now());
 
     await pool.query(`
-      INSERT INTO Users (username, password, first_name, last_name, phone, role, created_at, modified_at) VALUES
-      ('john_doe', $1, 'John', 'Doe', '123-456-7890', 0, $3, $3),
-      ('admin_user', $2, 'Admin', 'User', '098-765-4321', 1, $3, $3);
+      INSERT INTO Users (username, password, phone, role, created_at, modified_at) VALUES
+      ('john_doe', $1, '123-456-7890', 0, $3, $3),
+      ('admin_user', $2, '098-765-4321', 1, $3, $3);
     `, [hashedPassword1, hashedPassword2, date]);
     console.log('Seeded Users.');
 

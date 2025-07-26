@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import pool from '../db/pool';
 import bcrypt from 'bcrypt';
-import { signAccessToken } from '../middlewares/jwt.js';
+import { signAccessToken, signRefreshToken } from '../middlewares/jwt.js';
 
 const router = Router();
 
@@ -31,6 +31,20 @@ router.post('/login', async (req: Request, res: Response): Promise<any> => {
   } catch (e) {
     console.error('Error during login:', e);
     return res.status(500).json({ message: 'Internal server error during login' });
+  }
+});
+
+router.post('/refresh-token', async (req: Request, res: Response): Promise<any> => {
+  const result = signRefreshToken(req);
+  try {
+    if (result) {
+      res.cookie('accessToken', `${result.accessToken}`, { maxAge: 5 * 60 * 1000, httpOnly: true });
+      return res.status(200).json({ message: 'Access token refreshed' });
+    } else {
+      throw Error;
+    }
+  } catch (e) {
+    return res.status(401).json({ message: 'No refresh token found or invalid token.' });
   }
 });
 

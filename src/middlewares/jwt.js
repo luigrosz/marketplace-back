@@ -6,10 +6,12 @@ const signAccessToken = (req, res) => {
     if (req) {
       const accessToken = jwt.sign({ ...req }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
       const refreshToken = jwt.sign({ ...req }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '90d' });
-      res.cookie('refreshToken', `${refreshToken}`, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
+      res.cookie('accessToken', `${accessToken}`, { maxAge: 5 * 60 * 1000, httpOnly: true }); // 5 minutes
+      res.cookie('refreshToken', `${refreshToken}`, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true }); // 90 days
     }
   } catch (e) {
-    return res.status(500).json(e);
+    console.error("Error signing tokens:", e);
+    throw e;
   }
 }
 
@@ -18,11 +20,11 @@ const signRefreshToken = (req) => {
     const getToken = req.cookies.refreshToken;
     if (getToken) {
       const { id, username } = jwt.verify(getToken, process.env.REFRESH_TOKEN_SECRET)
-      const accesssToken = jwt.sign({ id, username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' })
-      return { accesssToken }
+      const accessToken = jwt.sign({ id, username }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5m' })
+      return { accessToken }
     }
   } catch (e) {
-    return res.status(401).json(e);
+    throw e;
   }
 }
 
