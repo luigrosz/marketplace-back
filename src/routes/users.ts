@@ -40,7 +40,7 @@ router.post('/getUserByUsername', async (req: Request, res: Response): Promise<a
 });
 
 router.post('/create', async (req: Request, res: Response): Promise<any> => {
-  const { username, password, first_name, last_name, phone } = req.body;
+  const { username, password, phone } = req.body;
   try {
     if (!username || !password || !phone) {
       return res.status(400).json({ message: 'missing required fields' });
@@ -49,12 +49,11 @@ router.post('/create', async (req: Request, res: Response): Promise<any> => {
     let date = new Date(Date.now());
     date.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
     await pool.query(
-      `INSERT INTO USERS (username, password, phone, created_at, modified_at) VALUES ($1, $2, $3, $4, $5, $6, $7);`,
+      `INSERT INTO USERS (username, password, phone, created_at, modified_at) VALUES ($1, $2, $3, $4, $5);`,
       [username, hashedPassword, phone, date, date]
     );
     return res.status(201).json('user created');
   } catch (e) {
-    console.log('error creating user:' + e);
     return res.status(500).json({ message: 'user not created' });
   }
 });
@@ -69,7 +68,6 @@ router.delete('/delete/:id', async (req: Request, res: Response): Promise<any> =
       return res.status(200).json({ message: 'user deleted' });
     }
   } catch (e) {
-    console.log(e);
     return res.status(500).json({ message: 'user not deleted' });
   }
 });
