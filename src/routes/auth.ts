@@ -11,7 +11,7 @@ router.get("/me", async (req: Request, res: Response): Promise<any> => {
     if (!refreshToken) return res.status(401).json({ loggedIn: false });
 
     const result = signRefreshToken(req);
-    if (result === undefined) return res.status(401).json({ loggedIn: false });=
+    if (result === undefined) return res.status(401).json({ loggedIn: false });
     res.json({ loggedIn: true });
   } catch (e) {
     res.status(401).json({ loggedIn: false });
