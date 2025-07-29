@@ -11,7 +11,7 @@ const PORT = 3001;
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://luigrosz.com'
+  'https://luigrosz.com'
 ];
 
 app.use(cors({

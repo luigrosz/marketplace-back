@@ -1,14 +1,10 @@
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
 import pg from 'pg';
-require('dotenv').config();
-
 const { Pool } = pg;
-
 const pool = new Pool({
-	user: process.env.user,
-	password: process.env.password,
-	host: process.env.host,
-	port: Number(process.env.port),
-	database: process.env.database
+	connectionString: 'postgresql://postgres:ynk_gzc@mvr4dyf6WFR@db.xxlcrzzazbsnrglmnghg.supabase.co:5432/postgres',
+        ssl: { rejectUnauthorized: false }
 });
 
 // link test image: https://lgrz-marketplace-images.s3.sa-east-1.amazonaws.com/fizz.jpeg

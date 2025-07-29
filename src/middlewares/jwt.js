@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response } from 'express';
 
+console.log(process.env.ACCESS_TOKEN_SECRET);
 const signAccessToken = (req, res) => {
   try {
     if (req) {
@@ -8,8 +9,8 @@ const signAccessToken = (req, res) => {
       const refreshToken = jwt.sign({ ...req }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '90d' });
 
       // development cookies
-      res.cookie('accessToken', `${accessToken}`, { sameSite: 'lax', maxAge: 5 * 60 * 1000 }); // 5 minutes
-      res.cookie('refreshToken', `${refreshToken}`, { sameSite: 'lax', maxAge: 2 * 60 * 60 * 1000 }); // 90 days
+      res.cookie('accessToken', `${accessToken}`, { sameSite: 'none', secure: true, maxAge: 5 * 60 * 1000 }); // 5 minutes
+      res.cookie('refreshToken', `${refreshToken}`, { sameSite: 'none', secure: true, maxAge: 2 * 60 * 60 * 1000 }); // 90 days
 
       // real cookies
       // res.cookie('accessToken', `${accessToken}`, { sameSite: 'strict', domain: process.env.frontend_domain, maxAge: 5 * 60 * 1000, httpOnly: true }); // 5 minutes

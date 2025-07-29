@@ -51,7 +51,7 @@ router.post('/refresh-token', async (req: Request, res: Response): Promise<any> 
   const result = signRefreshToken(req);
   try {
     if (result) {
-      res.cookie('accessToken', `${result.accessToken}`, { maxAge: 5 * 60 * 1000 });
+      res.cookie('accessToken', `${result.accessToken}`, {sameSite: 'none', secure: true,  maxAge: 5 * 60 * 1000 });      
       return res.status(200).json({ message: 'Access token refreshed' });
     } else {
       throw Error;
